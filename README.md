@@ -1,1 +1,295 @@
 # 137-STORE
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>137 Store</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:20px;
+    margin:25px 0;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:15px;
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+.preco{
+    font-size:20px;
+    color:green;
+    font-weight:bold;
+}
+
+button{
+    border:none;
+    background:#111;
+    color:white;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+    width:100%;
+    margin-top:10px;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.checkout{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:40px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+textarea{
+    width:100%;
+    margin-top:15px;
+    padding:12px;
+    border-radius:8px;
+    resize:none;
+}
+
+footer{
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+    <div class="logo">137 Store</div>
+    <div>
+        Total: R$ <span id="total">0.00</span>
+    </div>
+</header>
+
+<div class="container">
+
+    <h2 style="margin-top:20px;">Produtos</h2>
+
+    <div class="grid" id="produtos"></div>
+
+    <div class="checkout">
+
+        <h2>Finalizar Pedido</h2>
+
+        <input
+            type="text"
+            id="cliente"
+            placeholder="Digite seu nome"
+        >
+
+        <button onclick="gerarPedido()">
+            Gerar Pedido Pix
+        </button>
+
+        <textarea
+            id="pedido"
+            rows="12"
+            readonly
+        ></textarea>
+
+        <button onclick="copiarPedido()">
+            Copiar Dados Pix
+        </button>
+
+    </div>
+
+</div>
+
+<footer>
+    © 2026 - 137 Store
+</footer>
+
+<script>
+
+const produtos = [
+
+{
+id:1,
+nome:"Fone Bluetooth",
+preco:49.90,
+imagem:"https://picsum.photos/400/300?1"
+},
+
+{
+id:2,
+nome:"Smartwatch",
+preco:99.90,
+imagem:"https://picsum.photos/400/300?2"
+},
+
+{
+id:3,
+nome:"Camiseta Premium",
+preco:39.90,
+imagem:"https://picsum.photos/400/300?3"
+}
+
+];
+
+let carrinho = [];
+let total = 0;
+
+const areaProdutos = document.getElementById("produtos");
+
+produtos.forEach(produto => {
+
+const card = document.createElement("div");
+
+card.className = "card";
+
+card.innerHTML = `
+<img src="${produto.imagem}">
+<div class="card-content">
+<h3>${produto.nome}</h3>
+<p class="preco">
+R$ ${produto.preco.toFixed(2)}
+</p>
+<button onclick="adicionar(${produto.id})">
+Adicionar ao Carrinho
+</button>
+</div>
+`;
+
+areaProdutos.appendChild(card);
+
+});
+
+function adicionar(id){
+
+const produto = produtos.find(p => p.id === id);
+
+carrinho.push(produto);
+
+total += produto.preco;
+
+document.getElementById("total").innerText =
+total.toFixed(2);
+
+}
+
+function gerarPedido(){
+
+const cliente =
+document.getElementById("cliente").value || "Cliente";
+
+let lista = "";
+
+carrinho.forEach(item => {
+
+lista += `• ${item.nome} - R$ ${item.preco.toFixed(2)}\n`;
+
+});
+
+const texto = `
+
+137 STORE
+
+Cliente: ${cliente}
+
+Produtos:
+${lista}
+
+TOTAL:
+R$ ${total.toFixed(2)}
+
+PAGAMENTO PIX
+
+Recebedor:
+Ivan Lucas
+
+Cidade:
+Campo Grande
+
+Chave Pix:
+9b847f64-50a3-4d12-826b-6155b88356a4
+
+`;
+
+document.getElementById("pedido").value = texto;
+
+}
+
+function copiarPedido(){
+
+const campo =
+document.getElementById("pedido");
+
+campo.select();
+
+document.execCommand("copy");
+
+alert("Dados copiados!");
+
+}
+
+</script>
+
+</body>
+</html>
